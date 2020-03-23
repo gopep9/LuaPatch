@@ -1034,9 +1034,8 @@ static void overrideMethod(Class cls, NSString *selectorName, NSString *luaFunct
 static NSMethodSignature *block_methodSignatureForSelector(id self, SEL _cmd, SEL aSelector){
     printLog(@"block_methodSignatureForSelector");
     uint8_t *p = (uint8_t *)((__bridge void *)self);
-    p += sizeof(void *) + sizeof(int32_t) *2;
-    p += sizeof(void *);
-    void *p2 = *(void **)p;//这里的p是指向FuncPtr，p2就是FuncPtr，也就是__main_block_func_0
+    p += sizeof(void *)*2 + sizeof(int32_t) *2;
+    void *p2 = *(void **)p;//这里的p是指向block_desc，p2就是block_desc，也就是__main_block_desc_0
     p = p2;
     p += sizeof(uintptr_t) * 2;//c函数指针偏移两个uintptr_t后指向签名的指针
     const char **signature = (const char **)p;
@@ -1049,12 +1048,12 @@ static id genCallbackBlock(NSString *types,NSString *luaFunctionName){
     void (^block)(void) = ^(void){};//这个block是不会访问其执行堆栈的指针的，因此就算这个block是个堆栈block也没问题，说不定就是用了这样的特性来重定向的
     uint8_t *p = (uint8_t *)((__bridge void*)block);
     p += sizeof(void *) + sizeof(int32_t) *2;
-    void(**invoke)(void) = (void (**)(void))p;
+    void(**invoke)(void) = (void (**)(void))p;//p指向FuncPtr变量
     
-    p += sizeof(void *);
-    void *p2 = *(void **)p;
+    p += sizeof(void *);//移动p指向block_desc
+    void *p2 = *(void **)p;//解引用p，现在p2指向block_desc中的第一个变量reserved
     p = p2;
-    p += sizeof(uintptr_t) * 2;
+    p += sizeof(uintptr_t) * 2;//跳过block_desc中的reserved和Block_size，现在指向的指针指向签名字符串
     const char **signature = (const char **)p;
     
     NSString *funcSignature = [NSString stringWithUTF8String: genBlockSignature(types.UTF8String)];
