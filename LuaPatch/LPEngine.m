@@ -285,9 +285,6 @@ static void defineClassInOC(NSString *className,NSString *superClassName,NSArray
 
 //这里的className务必传真实的className，传父类的className可能会有错误，isSuper应该是假如指定需要调用父类的函数时要加上这个标记，例如[super init];
 id callSelector(NSString *className, NSString *selectorName,NSArray *arguments,id instance,BOOL isSuper){
-    if([selectorName isEqual:@"view"]){
-        int a = 1;
-    }
     printLog(@"callSelect className:%@\n selectorName:%@\n arguments:%@\n isSuper:%d",className,selectorName,arguments,isSuper); //这里打印instance可能会导致闪退，因此跳过instance的打印
     //假如instance是个nil的话，直接返回nil
     if(instance == _nilObj){
@@ -982,7 +979,6 @@ static void overrideMethod(Class cls, NSString *selectorName, NSString *luaFunct
         typeSignature = (char *)method_getTypeEncoding(method);
     }else{
         typeSignature = genFunctionSignature(typeDescription);
-        int a = 1;
     }
     IMP originalImp = class_getInstanceMethod(cls, selector)?class_getMethodImplementation(cls, selector):NULL;
     IMP msgForwardIMP = _objc_msgForward;
