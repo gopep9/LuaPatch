@@ -1,5 +1,9 @@
 # luapatch外部接入文档
 
+## 项目说明
+这个项目基于bang590大佬的[JSPatch](https://github.com/bang590/JSPatch)，在JSPatch的基础上把热更的语言改为使用Lua编写。  
+[gopep9/JSPatch](https://github.com/gopep9/JSPatch)这个是项目fork自JSPatch，添加了我阅读源码的时候注释，并且修改了源码中的几个bug。
+
 ## 接入方法
 1. 把LPEngine.m、LPEngine.h和luapatch.lua拖入对应的工程
 2. 添加lua的c语言源码（当前lua版本是5.3.5，不同的lua可能接口不一样，需要根据实际情况手动修改）
